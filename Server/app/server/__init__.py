@@ -1,5 +1,7 @@
 import click
 import sqlalchemy
+import random
+import string
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from random import choice, randint
@@ -17,6 +19,8 @@ class User(db.Model):
     name = db.Column(db.String(200), unique=True, nullable=False)
     admin = db.Column(db.Boolean, unique=True, nullable=False)
 
+    def __repr__(self):
+        return f'<User {self.name}>'
 
 class Device(db.Model):
     __tablename__ = 'devices'
@@ -29,7 +33,7 @@ class Device(db.Model):
 
 
 class Measurement(db.Model):
-    __tablename= 'measurements'
+    __tablename__='measurements'
     id = db.Column(db.Integer, primary_key=True)
     temperature = db.Column(db.Numeric(precision=9, scale=6))
     pressure = db.Column(db.Numeric(precision=9, scale=6))
@@ -62,8 +66,19 @@ def create_db():
 @click.argument('password')
 @click.argument('name')
 def add_user(email, password, name):
-    user = User({'email':email,'password':password, 'name':name})
+    print("{} {} {}\n".format(email, password, name))
+    user = User(**{'email':email,'password':generate_password_hash(password), 'name':name, 'admin':False})
+    print(user)
     db.session.add(user)
     db.session.commit()
-    print("user added\n")
-    
+    print("user added")
+
+
+@app.cli.command('createdevice')
+@click.argument('name')
+@click.argument('users_id')
+def add_device(name, users_id):
+    device = Device(**{'name':name, 'token': ''.join(random.choice(string.ascii_lowercase+string.digits) for i in range(8)),'users_id': users_id})
+    db.session.add(device)
+    db.session.commit()
+    print("device added")
