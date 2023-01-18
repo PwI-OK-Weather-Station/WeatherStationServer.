@@ -35,7 +35,7 @@ def login():
                     'id':user.id, 'name':user.name, 
                     'exp' : datetime.utcnow() + timedelta(minutes = 30)},
                 app.config['SECRET_KEY']);
-            return {'token':token}, 200
+            return {'token':token, 'name': user.name}, 200
 
     return {'Error':"Błędne dane logowania"}, 400
 
