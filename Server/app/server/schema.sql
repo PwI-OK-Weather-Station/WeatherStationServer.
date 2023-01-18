@@ -13,16 +13,17 @@ CREATE TABLE users(
 
 CREATE TABLE devices(
 	id SERIAL PRIMARY KEY ,
-	location_longitude DOUBLE,
-	location_latitude DOUBLE,
+	location_longitude DECIMAL(9,6),
+	location_latitude DECIMAL(9,6),
 	name VARCHAR(200) NOT NULL,
+	token VARCHAR(200) NOT NULL UNIQUE,
 	users_id INTEGER REFERENCES users(id)
 );
 
 CREATE TABLE measurements(
 	id SERIAL PRIMARY KEY,
-	temperature DOUBLE,
-	pressure DOUBLE,
-	humidity DOUBLE,
+	temperature DECIMAL(9,6),
+	pressure DECIMAL(9,6),
+	humidity DECIMAL(9,6),
 	devices_id INTEGER REFERENCES devices(id)
 );
