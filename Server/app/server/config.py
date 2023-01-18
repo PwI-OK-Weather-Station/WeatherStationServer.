@@ -13,4 +13,5 @@ class Config(object):
     dbport=os.environ['SQL_PORT'],
     dbname=os.environ['POSTGRES_DB']
 )
+    SECRET_KEY = os.environ['SECRET']
     SQLALCHEMY_TRACK_MODIFICATIONS = False
