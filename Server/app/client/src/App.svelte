@@ -1,11 +1,23 @@
 <script>
-	export let name;
+	import Navbar from './panels/navbar.svelte'
+	import Login from './panels/login.svelte'
+	import Devices from './panels/devices.svelte'
+	let name;
+	let menu
 </script>
 
+<Navbar bind:menu={menu}/>
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	{#if menu == 0}
+		<h1>Hello {menu}!</h1>
+		<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	{:else if menu == 1}
+			<Devices />
+	{:else if menu == 4}
+		<Login />
+	{/if}
 </main>
+	
 
 <style>
 	main {

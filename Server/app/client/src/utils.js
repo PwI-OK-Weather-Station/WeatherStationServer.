@@ -10,14 +10,9 @@ export async function fetchPOST(url, data) {
     return await req.json();
   }
 
-  export async function fetchPOST(url, data) {
+  export async function fetchGET(url) {
     const req = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
+      method: 'GET'
     });
     return await req.json();
   }
