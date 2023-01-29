@@ -12,7 +12,9 @@ CREATE TABLE users(
 );
 
 CREATE TABLE devices(
-	id SERIAL PRIMARY KEY ,
+	id SERIAL PRIMARY KEY,
+	public BOOLEAN NOT NULL DEFAULT FALSE,
+	indoor BOOLEAN NOT NULL DEFAULT TRUE,
 	location_longitude DECIMAL(9,6),
 	location_latitude DECIMAL(9,6),
 	name VARCHAR(200) NOT NULL,
@@ -22,8 +24,9 @@ CREATE TABLE devices(
 
 CREATE TABLE measurements(
 	id SERIAL PRIMARY KEY,
-	temperature DECIMAL(9,6),
-	pressure DECIMAL(9,6),
-	humidity DECIMAL(9,6),
-	devices_id INTEGER REFERENCES devices(id)
+	create_time TIMESTAMP DEFAULT NOW(),
+	temperature DECIMAL(9,6) DEFAULT NULL,
+	pressure DECIMAL(9,6) DEFAULT NULL,
+	humidity DECIMAL(9,6) DEFAULT NULL,
+	devices_id INTEGER REFERENCES devices(id) NOT NULL
 );

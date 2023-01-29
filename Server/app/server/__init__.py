@@ -17,7 +17,7 @@ class User(db.Model):
     email = db.Column(db.String(), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     name = db.Column(db.String(200), unique=True, nullable=False)
-    admin = db.Column(db.Boolean, unique=True, nullable=False)
+    admin = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         return f'<User {self.name}>'
@@ -25,8 +25,10 @@ class User(db.Model):
 class Device(db.Model):
     __tablename__ = 'devices'
     id = db.Column(db.Integer, primary_key=True)
-    location_latitude = db.Column(db.Numeric(precision=9, scale=6))
-    location_longitude = db.Column(db.Numeric(precision=9, scale=6))
+    public = db.Column(db.Boolean, nullable=False, default=False)
+    indoor = db.Column(db.Boolean, nullable=False, default=True)
+    location_latitude = db.Column(db.Numeric(precision=9, scale=6), default=None)
+    location_longitude = db.Column(db.Numeric(precision=9, scale=6), default=None)
     name = db.Column(db.String(200), nullable=False)
     token = db.Column(db.String(200), nullable=False, unique=True)
     users_id = db.Column(db.Integer, nullable=False)
@@ -35,9 +37,10 @@ class Device(db.Model):
 class Measurement(db.Model):
     __tablename__='measurements'
     id = db.Column(db.Integer, primary_key=True)
-    temperature = db.Column(db.Numeric(precision=9, scale=6))
-    pressure = db.Column(db.Numeric(precision=9, scale=6))
-    humidity = db.Column(db.Numeric(precision=9, scale=6))
+    create_time = db.Column(db.DateTime, nullable=False, default=db.func.now())
+    temperature = db.Column(db.Numeric(precision=9, scale=6), default=None)
+    pressure = db.Column(db.Numeric(precision=9, scale=6), default=None)
+    humidity = db.Column(db.Numeric(precision=9, scale=6), default=None)
     devices_id = db.Column(db.Integer, nullable=False)
 
 
