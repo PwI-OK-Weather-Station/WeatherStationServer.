@@ -13,6 +13,7 @@
 		<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
 	{:else if menu == 1}
 			<Devices />
+			
 	{:else if menu == 4}
 		<Login />
 	{/if}
