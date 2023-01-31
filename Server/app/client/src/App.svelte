@@ -4,16 +4,18 @@
 	import Devices from './panels/devices.svelte'
 	let name;
 	let menu
+	localStorage.theme = 'dark'
 </script>
 
+<main class="dark">
 <Navbar bind:menu={menu}/>
-<main>
 	{#if menu == 0}
 		<h1>Hello {menu}!</h1>
 		<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
 	{:else if menu == 1}
 			<Devices />
-			
+	{:else if menu == 2}
+			<Devices />	
 	{:else if menu == 4}
 		<Login />
 	{/if}
@@ -23,8 +25,8 @@
 <style>
 	main {
 		text-align: center;
-		padding: 1em;
 		max-width: 240px;
+		height: 100vh;
 		margin: 0 auto;
 	}
 

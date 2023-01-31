@@ -105,6 +105,27 @@ FROM devices d inner join users u on d.users_id = u.id {condition} ORDER BY d.id
         'indoor': row[5], 'location_latitude': row[6], 'location_longitude': row[7]})
 
     return {'devices':result},200
+
+@app.get('/api/mindevices')
+def list_mindevices():
+    authStat = authorize(request)
+    condition = ""
+    conn = db.engine.connect()
+    print(authStat['id'])
+    if authStat['id'] <= 0:
+        condition = f"WHERE d.public = TRUE" 
+    elif authStat['admin']:
+        condition = ""
+    else:
+        condition = f"WHERE d.public = TRUE or u.id = {authStat['id']}"
+    query = query = f"SELECT d.id, d.name, u.id, u.name, d.public, d.indoor, d.location_latitude, d.location_longitude \
+FROM devices d inner join users u on d.users_id = u.id {condition} ORDER BY d.id;"
+    queryResult = conn.execute(query)
+    result = []
+    for row in queryResult:
+        result.append({'id': row[0] ,'name':row[1]})
+
+    return {'devices':result},200
     
 
 @app.get('/api/device/<int:id>')
@@ -113,13 +134,29 @@ def device_info(id):
     if device:
         authStat = authorize(request)
         if authStat['id'] <= 0:
-            measurements = Measurement.query.filter_by(devices_id=id, public=True).all()
+            measurements = Measurement.query.filter_by(devices_id=id).all()
         else:
             """"TO DO - lepsza filtracja tak aby uniemożliwić podglądanie przez innych użytkowników"""
             measurements = Measurement.query.filter_by(devices_id=id).all()
         result = []
         for row in measurements:
-            result.append({'temperature': row.temperature ,'pressure':row.pressure, 'humidity':row.humidity})
+            result.append({'temperature': row.temperature ,'pressure':row.pressure, 'humidity':row.humidity, 'create_time':row.create_time})
+        return {'id':device.id, 'name':device.name ,'measurements':result},200
+    return {"Error": "Brak dostępu do pomiarów"}, 400
+
+@app.get('/api/device/<int:id>/<int:count>')
+def device_info_limited(id,count):
+    device = Device.query.filter_by(id=id).first()
+    if device:
+        authStat = authorize(request)
+        if authStat['id'] <= 0:
+            measurements = Measurement.query.filter_by(devices_id=id).order_by(Measurement.create_time.desc()).limit(count)
+        else:
+            """"TO DO - lepsza filtracja tak aby uniemożliwić podglądanie przez innych użytkowników"""
+            measurements = Measurement.query.filter_by(devices_id=id).order_by(Measurement.create_time.desc()).limit(count)
+        result = []
+        for row in measurements:
+            result.append({'temperature': row.temperature ,'pressure':row.pressure, 'humidity':row.humidity, 'create_time':row.create_time})
         return {'id':device.id, 'name':device.name ,'measurements':result},200
     return {"Error": "Brak dostępu do pomiarów"}, 400
 
