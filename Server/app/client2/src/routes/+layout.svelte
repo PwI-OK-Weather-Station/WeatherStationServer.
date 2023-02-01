@@ -20,10 +20,12 @@
 		try {
 			$user = await api.get('/auth');
 		} catch (err) {
-
+			logout();
 		}
 	};
-	auth();
+	if(document.cookie.match(/^(.*;)?\s*token\s*=\s*[^;]+(.*)?$/)){
+		auth();
+	}
 </script>
 
 <nav>
@@ -31,7 +33,7 @@
 		<a href="/" class="home">WeatherStation</a>
 		<a href="/sensors">Sensors</a>
 		{#if $user}
-			<a href="/config" class="admin">Add device</a>
+			<a href="/addDevice" class="admin">Add device</a>
 		{/if}
 	</div>
 
