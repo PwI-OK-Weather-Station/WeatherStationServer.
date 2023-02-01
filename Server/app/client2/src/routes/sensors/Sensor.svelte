@@ -11,13 +11,28 @@
 	let measurements = [];
 	let mType = 'humidity';
 	$: mLast = measurements[measurements.length - 1];
-
+	
 	async function fetchMeasurements(sensor) {
 		const data = await api.get(`/device/${sensor.device_id}/${count}`);
 		measurements = data.measurements;
 	}
+	async function fetchConfig(sensor) {		
+		try{
+			const data = await api.get(`/device/${sensor.device_id}/config`);
+			if(!data.hasOwnProperty('Error')){
+				config = data;
+			}
+			else{
+				config = null;
+			}
+		}
+		catch (err){
+			config = null;
+		}	
+	}
 	$: fetchMeasurements(sensor);
-
+	$: fetchConfig(sensor)
+	
 	async function toggleIndoor() {
 		const data = await api.post(`/device/${sensor.device_id}/config`, {
 			indoor: !sensor.indoor
@@ -35,6 +50,9 @@
 <div class="wrapper">
 	<div class="title">
 		<h2>{sensor.device_name} <span class="id">id: {sensor.device_id}</span></h2>
+		{#if permissions}
+			<b>Token</b>: {config.token}
+		{/if}
 	</div>
 
 	<div class="info">
@@ -42,23 +60,20 @@
 		{#if sensor.indoor}
 			<p class="colored">
 				INDOOR
-				{#if permissions}<button on:click={toggleIndoor}>Toggle</button>{/if}
 			</p>
 		{:else}
 			<p>OUTDOOR</p>
 		{/if}
+		{#if permissions}<button on:click={toggleIndoor}>Toggle</button>{/if}
 		{#if sensor.is_public}
 			<p class="colored">
 				PUBLIC
-				{#if permissions}<button on:click={togglePublic}>Toggle</button>{/if}
 			</p>
 		{:else}
 			<p>PRIVATE</p>
 		{/if}
-
-		{#if permissions}
-			<b>Token</b>: {config.token}
-		{/if}
+			
+		{#if permissions}<button on:click={togglePublic}>Toggle</button>{/if}
 	</div>
 
 	<div class="chart-wrapper">

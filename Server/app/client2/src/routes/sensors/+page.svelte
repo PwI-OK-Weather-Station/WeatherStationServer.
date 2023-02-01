@@ -7,17 +7,7 @@
 	$: sensor = data.sensors[index];
 	let config;
 
-	async function fetchConfigs(sensor) {
-		console.log('fetching config');
-		try {
-			const data = await api.get(`/device/${sensor.device_id}/config`);
-			console.log(data);
-			config = data;
-		} catch (err) {
-			config = null;
-		}
-	}
-	$: fetchConfigs(sensor);
+
 	
 </script>
 
