@@ -17,7 +17,7 @@ cli = FlaskGroup(app)
 
 
 def send_file(file):
-    return send_from_directory('../client/public', file)
+    return send_from_directory('../client2/build', file)
 
 
 
@@ -41,8 +41,8 @@ def login():
                     'exp' : datetime.utcnow() + timedelta(minutes = 30)},
                 app.config['SECRET_KEY']);
             resp = flask.make_response({'token':token, 'name': user.name, 'uid': user.id})
-            resp.set_cookie('token', token)
-            resp.set_cookie('name', user.name)
+            resp.set_cookie('token', token, samesite="Lax")
+            resp.set_cookie('name', user.name, samesite="Lax")
             return resp, 200
 
     return {'Error':"Błędne dane logowania"}, 400
@@ -52,7 +52,7 @@ def auth():
     authStat = authorize(request)
     if authStat['id'] <= 0:
         return {'Error': "Brak autoryzacji"}, 400
-    return {'Message': 'Authorized'}, 200
+    return {'Message': 'Authorized', 'id': authStat['id'], 'name': authStat['name']}, 200
 
 @app.post('/api/logout')
 def logout():

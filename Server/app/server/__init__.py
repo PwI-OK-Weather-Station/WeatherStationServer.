@@ -4,10 +4,12 @@ import random
 import string
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from random import choice, randint
 from  werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
+CORS(app)
 app.config.from_object('server.config.Config')
 db = SQLAlchemy(app)
 
